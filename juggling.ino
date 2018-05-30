@@ -18,10 +18,24 @@
  */
 
 #include "MPU9250.h"
+#include "Wire.h"
 
 // an MPU9250 object with the MPU-9250 sensor on I2C bus 0 with address 0x68
 MPU9250 IMU(Wire, 0x68);
 int status;
+
+//declaration of the Threshold
+const int threshold = 2;
+
+// declaration pin of led
+const int ledPinX = 8;
+const int ledPinY = 10;
+const int ledPinZ = 12;
+
+//declaration led state
+int ledStateX = LOW;
+int ledStateY = LOW;
+int ledStateZ = LOW;
 
 void setup() {
 	// serial to display data
@@ -38,6 +52,39 @@ void setup() {
 		Serial.println(status);
 		while (1) {
 		}
+	}
+
+
+	//set digital pin output
+	  pinMode(ledPinX, OUTPUT);
+	  pinMode(ledPinY, OUTPUT);
+	  pinMode(ledPinZ, OUTPUT);
+}
+
+// function to check rotation axe X
+void checkAxeX(){
+if(abs(IMU.getGyroX_rads()) >= threshold){
+	ledStateX = HIGH;
+}else {
+	ledStateX = LOW;
+}
+}
+
+//function to check rotation axe Y
+void checkAxeY(){
+	if(abs(IMU.getGyroY_rads()) >= threshold){
+		ledStateY = HIGH;
+	}else {
+		ledStateY = LOW;
+	}
+}
+
+//function to check rotation axe Z
+void checkAxeZ(){
+	if(abs(IMU.getGyroZ_rads() )>= threshold){
+		ledStateZ = HIGH;
+	}else{
+		ledStateZ = LOW;
 	}
 }
 
@@ -65,5 +112,14 @@ void loop() {
 //  Serial.print("\t");
 //	Serial.print(IMU.getTemperature_C(), 6);
 	Serial.println();
+
+	// call function
+	checkAxeX();
+	checkAxeY();
+	checkAxeZ();
+
+	digitalWrite(ledPinX, ledStateX);
+	digitalWrite(ledPinY, ledStateY);
+	digitalWrite(ledPinZ, ledStateZ);
 	delay(100);
 }
