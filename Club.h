@@ -18,7 +18,11 @@ public:
 	virtual ~Club();
 	void init();
 	String printGyroSensor();
-
+	MPU9250* getMPU();
+	void readSensor();
+	float getGyroX();
+	float getGyroY();
+	float getGyroZ();
 private:
 	MPU9250 *IMU;
 };

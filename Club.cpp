@@ -30,58 +30,65 @@ void Club::init() {
 }
 
 String Club::printGyroSensor() {
-	IMU->readSensor();
-	String sensor;
-	// display the data
-	sensor = "Accel=";
+	if (IMU->readSensor() < 0)
+		return "Sensor not ready";
+
+	String sensor = "";
+//	// display the data
+	sensor += "Accel=";
 	sensor += "[";
-	sensor += String(IMU->getAccelX_mss());
-	sensor += "\t";
-	sensor += String(IMU->getAccelY_mss());
-	sensor += "\t";
-	sensor += String(IMU->getAccelZ_mss());
+	sensor += String(IMU->getAccelX_mss(), 6);
+	sensor += " / ";
+	sensor += String(IMU->getAccelY_mss(), 6);
+	sensor += " / ";
+	sensor += String(IMU->getAccelZ_mss(), 6);
 	sensor += "]";
 	sensor += " Gyro=";
 	sensor += "[";
-	sensor += String(IMU->getGyroX_rads());
-	sensor += "\t";
-	sensor += String(IMU->getGyroY_rads());
-	sensor += "\t";
-	sensor += String(IMU->getGyroZ_rads());
-	sensor += "]";
-	sensor += " Mag=";
-	sensor += "[";
-	sensor += String(IMU->getMagX_uT());
-	sensor += "\t";
-	sensor += String(IMU->getMagY_uT());
-	sensor += "\t";
-	sensor += String(IMU->getMagZ_uT());
-	sensor += "]";
-	sensor += " TempC=";
-	sensor += "[";
-	sensor += String(IMU->getTemperature_C());
-	sensor += "]";
 
-	//  Serial.print(IMU.getAccelX_mss(),6);
-	//  Serial.print("\t");
-	//  Serial.print(IMU.getAccelY_mss(),6);
-	//  Serial.print("\t");
-	//  Serial.print(IMU.getAccelZ_mss(),6);
-	//  Serial.print("\t");
-	//  Serial.print(IMU.getGyroX_rads(),6);
-	//  Serial.print("\t");
-	//  Serial.print(IMU.getGyroY_rads(),6);
-	//  Serial.print("\t");
-	//  Serial.print(IMU.getGyroZ_rads(),6);
-	//  Serial.print("\t");
-	//  Serial.print(IMU.getMagX_uT(),6);
-	//  Serial.print("\t");
-	//  Serial.print(IMU.getMagY_uT(),6);
-	//  Serial.print("\t");
-	//  Serial.print(IMU.getMagZ_uT(),6);
-	//  Serial.print("\t");
-	//	Serial.print(IMU.getTemperature_C(), 6);
-//		Serial.println();
+//	char buf[20];
+//	dtostrf(IMU->getGyroX_rads(), 8, 2, buf);
+	sensor += String();
+//	sensor += String(buf[0]);
+
+//	sensor += "\t";
+//	sensor += String((double)IMU->getGyroY_rads());
+//	sensor += "\t";
+//	sensor += String(IMU->getGyroZ_rads(), 6);
+//	sensor += "]";
+//	sensor += " Mag=";
+//	sensor += "[";
+//	sensor += String(IMU->getMagX_uT());
+//	sensor += "\t";
+//	sensor += String(IMU->getMagY_uT());
+//	sensor += "\t";
+//	sensor += String(IMU->getMagZ_uT());
+//	sensor += "]";
+//	sensor += " TempC=";
+//	sensor += "[";
+//	sensor += String(IMU->getTemperature_C());
+//	sensor += "]";
+
 	return sensor;
 }
 
+void Club::readSensor(){
+	IMU->readSensor();
+}
+
+float Club::getGyroX()
+{
+	return IMU->getGyroX_rads();
+}
+float Club::getGyroY()
+{
+	return IMU->getGyroY_rads();
+}
+float Club::getGyroZ()
+{
+	return IMU->getGyroZ_rads();
+}
+
+MPU9250* Club::getMPU() {
+	return IMU;
+}

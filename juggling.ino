@@ -42,8 +42,10 @@ void setup() {
 	Serial.begin(9600);
 	while (!Serial) {
 	}
-
+	Serial.println("Club Starting");
 	myClub.init();
+	delay(100);
+	Serial.println("Club initialized");
 	// start communication with IMU
 
 	//set digital pin output
@@ -80,21 +82,32 @@ void setup() {
 //}
 
 void loop() {
-	Serial.println(myClub.printGyroSensor());
+//	Serial.println(myClub.printGyroSensor());
+	myClub.readSensor();
+
+	Serial.print(myClub.getGyroX(), 3);
+	Serial.print("$");
+	Serial.print(myClub.getGyroY(), 3);
+	Serial.print("$");
+	Serial.print(myClub.getGyroZ(), 3);
+	Serial.println();
+//	Serial.print(String(abs(myClub.getGyroX())));
 	// read the sensor
-//	IMU.readSensor();
+//	myClub.getMPU()->readSensor();
 	// display the data
-//  Serial.print(IMU.getAccelX_mss(),6);
+//  Serial.print(myClub.getMPU()->getAccelX_mss(),3);
 //  Serial.print("\t");
-//  Serial.print(IMU.getAccelY_mss(),6);
+//  Serial.print(myClub.getMPU()->getAccelY_mss(),3);
 //  Serial.print("\t");
-//  Serial.print(IMU.getAccelZ_mss(),6);
+//  char msg[50];
+////  sprintf(msg,"%f",(double) myClub.getMPU()->getAccelZ_mss());
+//  Serial.print((double)myClub.getMPU()->getAccelZ_mss());
 //  Serial.print("\t");
-//  Serial.print(IMU.getGyroX_rads(),6);
+//  Serial.print(printf("%f",myClub.getMPU()->getGyroX_rads()));
 //  Serial.print("\t");
-//  Serial.print(IMU.getGyroY_rads(),6);
+//  Serial.print(myClub.getMPU()->getGyroY_rads(),6);
 //  Serial.print("\t");
-//  Serial.print(IMU.getGyroZ_rads(),6);
+//  Serial.print(myClub.getMPU()->getGyroZ_rads(),6);
 //  Serial.print("\t");
 //  Serial.print(IMU.getMagX_uT(),6);
 //  Serial.print("\t");
