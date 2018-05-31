@@ -8,9 +8,10 @@
 #include "Club.h"
 #include "MPU9250.h"
 
+
+
 Club::Club() {
 	IMU = new MPU9250(Wire, 0x68);
-
 }
 
 Club::~Club() {

@@ -20,6 +20,16 @@
 // an MPU9250 object with the MPU-9250 sensor on I2C bus 0 with address 0x68
 #include "Club.h"
 
+#include "XBee.h"
+XBee xbee = XBee();
+
+uint8_t payload[] = { 0, 0 };
+
+// SH + SL Address of receiving XBee
+XBeeAddress64 addr64 = XBeeAddress64(0x0013a200, 0x40B451CF);
+ZBTxRequest zbTx = ZBTxRequest(addr64, payload, sizeof(payload));
+ZBTxStatusResponse txStatus = ZBTxStatusResponse();
+
 int status;
 
 //declaration of the Threshold
@@ -44,8 +54,9 @@ void setup() {
 	}
 	Serial.println("Club Starting");
 	myClub.init();
-	delay(100);
-	Serial.println("Club initialized");
+	xbee.setSerial(Serial);
+
+//	Serial.println("Club initialized");
 	// start communication with IMU
 
 	//set digital pin output
@@ -84,13 +95,51 @@ void setup() {
 void loop() {
 //	Serial.println(myClub.printGyroSensor());
 	myClub.readSensor();
+////
+//	Serial.print(myClub.getGyroX(), 3);
+//	Serial.print("$");
+//	Serial.print(myClub.getGyroY(), 3);
+//	Serial.print("$");
+//	Serial.print(myClub.getGyroZ(), 3);
+//	Serial.println();
+	uint8_t data[255];
+//	data = ""+String(myClub.getGyroX(), 3) + "$" + String(myClub.getGyroY(), 3)+ "$" + String(myClub.getGyroZ(), 3);
+	String s = String(myClub.getGyroX(), 3);
+	s += "$";
+	s += String(myClub.getGyroY(), 3);
+	s += "$";
+	s += String(myClub.getMPU()->getTemperature_C(), 3);
+	byte buf[40];
+	s.getBytes(buf, 39, 0);
+	XBeeAddress64 addr64 = XBeeAddress64(0x00000000, 0x00000000);
+	ZBTxRequest zbTx = ZBTxRequest(addr64, buf, sizeof(buf));
+	ZBTxStatusResponse txStatus = ZBTxStatusResponse();
 
-	Serial.print(myClub.getGyroX(), 3);
-	Serial.print("$");
-	Serial.print(myClub.getGyroY(), 3);
-	Serial.print("$");
-	Serial.print(myClub.getGyroZ(), 3);
-	Serial.println();
+	xbee.send(zbTx);
+	if (xbee.readPacket(500)) {
+		// got a response!
+
+		// should be a znet tx status
+		if (xbee.getResponse().getApiId() == ZB_TX_STATUS_RESPONSE) {
+			xbee.getResponse().getZBTxStatusResponse(txStatus);
+
+			// get the delivery status, the fifth byte
+			if (txStatus.getDeliveryStatus() == SUCCESS) {
+				// success.  time to celebrate
+				//flashLed(statusLed, 5, 50);
+			} else {
+				// the remote XBee did not receive our packet. is it powered on?
+				//flashLed(errorLed, 3, 500);
+			}
+		}
+	} else if (xbee.getResponse().isError()) {
+		//nss.print("Error reading packet.  Error code: ");
+		//nss.println(xbee.getResponse().getErrorCode());
+	} else {
+		// local XBee did not provide a timely TX Status Response -- should not happen
+		//flashLed(errorLed, 2, 50);
+	}
+
 //	Serial.print(String(abs(myClub.getGyroX())));
 	// read the sensor
 //	myClub.getMPU()->readSensor();
