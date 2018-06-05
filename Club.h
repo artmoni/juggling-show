@@ -9,7 +9,6 @@
 #define CLUB_H_
 
 #include "MPU9250.h"
-#include "Wire.h"
 
 class Club {
 
@@ -19,10 +18,13 @@ public:
 	void init();
 	String printGyroSensor();
 	MPU9250* getMPU();
-	void readSensor();
+	int readSensor();
 	float getGyroX();
 	float getGyroY();
 	float getGyroZ();
+	float getAccelX_mss();
+	float getAccelY_mss();
+	float getAccelZ_mss();
 private:
 	MPU9250 *IMU;
 };

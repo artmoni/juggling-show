@@ -20,6 +20,7 @@ Club::~Club() {
 
 void Club::init() {
 	int status = IMU->begin();
+
 	if (status < 0) {
 //		Serial.println("IMU initialization unsuccessful");
 //		Serial.println("Check IMU wiring or try cycling power");
@@ -73,8 +74,9 @@ String Club::printGyroSensor() {
 	return sensor;
 }
 
-void Club::readSensor(){
-	IMU->readSensor();
+int Club::readSensor(){
+
+	return IMU->readSensor();
 }
 
 float Club::getGyroX()
@@ -88,6 +90,18 @@ float Club::getGyroY()
 float Club::getGyroZ()
 {
 	return IMU->getGyroZ_rads();
+}
+float Club::getAccelX_mss()
+{
+	return IMU->getAccelX_mss();
+}
+float Club::getAccelY_mss()
+{
+	return IMU->getAccelY_mss();
+}
+float Club::getAccelZ_mss()
+{
+	return IMU->getAccelZ_mss();
 }
 
 MPU9250* Club::getMPU() {
