@@ -27,12 +27,12 @@ void Club::init() {
 		while (1) {
 		}
 	}
-	IMU->setGyroBiasX_rads(0);
-	IMU->setGyroBiasY_rads(0);
-	IMU->setGyroBiasZ_rads(0);
-	IMU->calibrateAccel();
-	IMU->calibrateGyro();
-	IMU->calibrateMag();
+//	IMU->setGyroBiasX_rads(0);
+//	IMU->setGyroBiasY_rads(0);
+//	IMU->setGyroBiasZ_rads(0);
+//	IMU->calibrateAccel();
+//	IMU->calibrateGyro();
+//	IMU->calibrateMag();
 
 }
 

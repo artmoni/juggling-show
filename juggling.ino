@@ -31,52 +31,67 @@ void setup() {
 	}
 	Serial.println("Club Starting");
 	myClub.init();
-	xbee.setSerial(Serial);
-
+//	xbee.setSerial(Serial);
 
 }
 
 void loop() {
+//	Serial.println("loop");
 
 	myClub.readSensor();
 
-	String s = "";
-	s += String(myClub.getGyroX(), 3);
-	s += '$';
-	s += String(myClub.getGyroY(), 3);
-	s += '$';
-	s += String(myClub.getGyroZ(), 3);
-	s += '$';
-	s += String(myClub.getAccelX_mss(), 3);
-	s += '$';
-	s += String(myClub.getAccelY_mss(), 3);
-	s += '$';
-	s += String(myClub.getAccelZ_mss(), 3);
-	s += '$';
-	s += String(myClub.getMPU()->getTemperature_C(), 3);
+//	String s = "";
+//	s += String(myClub.getGyroX(), 3);
+//	s += '$';
+//	s += String(myClub.getGyroY(), 3);
+//	s += '$';
+//	s += String(myClub.getGyroZ(), 3);
+//	s += '$';
+//	s += String(myClub.getAccelX_mss(), 3);
+//	s += '$';
+//	s += String(myClub.getAccelY_mss(), 3);
+//	s += '$';
+//	s += String(myClub.getAccelZ_mss(), 3);
+//	s += '$';
+//	s += String(myClub.getMPU()->getTemperature_C(), 3);
 
-	byte buf[40];
-	if (s.length()>60)
-		s="Data too long";
-	s.getBytes(buf, 39, 0);
+//	byte buf[40];
+//	if (s.length()>60)
+//		s="Data too long";
+//	s.getBytes(buf, 39, 0);
+//
+//	XBeeAddress64 addr64 = XBeeAddress64(0x00000000, 0x00000000);
+//	ZBTxRequest zbTx = ZBTxRequest(addr64, buf, sizeof(buf));
+//	ZBTxStatusResponse txStatus = ZBTxStatusResponse();
 
-	XBeeAddress64 addr64 = XBeeAddress64(0x00000000, 0x00000000);
-	ZBTxRequest zbTx = ZBTxRequest(addr64, buf, sizeof(buf));
-	ZBTxStatusResponse txStatus = ZBTxStatusResponse();
+//	xbee.send(zbTx);
+//
+//	if (xbee.readPacket(200)) {
+//		if (xbee.getResponse().getApiId() == ZB_TX_STATUS_RESPONSE) {
+//			xbee.getResponse().getZBTxStatusResponse(txStatus);
+//
+//			if (txStatus.getDeliveryStatus() == SUCCESS) {
+//			} else {
+//			}
+//		}
+//	} else if (xbee.getResponse().isError()) {
+//	} else {
+//	}
 
-	xbee.send(zbTx);
+	Serial.print(myClub.getGyroX(), 3);
+	Serial.print("$");
+	Serial.print(myClub.getGyroY(), 3);
+	Serial.print("$");
+	Serial.print(myClub.getGyroZ(), 3);
+	Serial.print("$");
+	Serial.print(myClub.getAccelX_mss(), 3);
+	Serial.print("$");
+	Serial.print(myClub.getAccelY_mss(), 3);
+	Serial.print("$");
+	Serial.print(myClub.getAccelZ_mss(), 3);
+	Serial.print("$");
+	Serial.print(myClub.getMPU()->getTemperature_C(), 3);
 
-	if (xbee.readPacket(200)) {
-		if (xbee.getResponse().getApiId() == ZB_TX_STATUS_RESPONSE) {
-			xbee.getResponse().getZBTxStatusResponse(txStatus);
-
-			if (txStatus.getDeliveryStatus() == SUCCESS) {
-			} else {
-			}
-		}
-	} else if (xbee.getResponse().isError()) {
-	} else {
-	}
-
+	Serial.println();
 	delay(100);
 }
