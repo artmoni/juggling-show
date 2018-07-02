@@ -26,7 +26,6 @@ XBee xbee = XBee();
 Club myClub;
 
 void setup() {
-	// serial to display data
 	Serial.begin(9600);
 	while (!Serial) {
 	}
@@ -34,8 +33,6 @@ void setup() {
 	myClub.init();
 	xbee.setSerial(Serial);
 
-//	Serial.println("Club initialized");
-	// start communication with IMU
 
 }
 
@@ -58,10 +55,10 @@ void loop() {
 	s += '$';
 	s += String(myClub.getMPU()->getTemperature_C(), 3);
 
-	byte buf[50];
-	if (s.length()>50)
+	byte buf[40];
+	if (s.length()>60)
 		s="Data too long";
-	s.getBytes(buf, 49, 0);
+	s.getBytes(buf, 39, 0);
 
 	XBeeAddress64 addr64 = XBeeAddress64(0x00000000, 0x00000000);
 	ZBTxRequest zbTx = ZBTxRequest(addr64, buf, sizeof(buf));
@@ -70,27 +67,15 @@ void loop() {
 	xbee.send(zbTx);
 
 	if (xbee.readPacket(200)) {
-		// got a response!
-
-		// should be a znet tx status
 		if (xbee.getResponse().getApiId() == ZB_TX_STATUS_RESPONSE) {
 			xbee.getResponse().getZBTxStatusResponse(txStatus);
 
-			// get the delivery status, the fifth byte
 			if (txStatus.getDeliveryStatus() == SUCCESS) {
-				// success.  time to celebrate
-				//flashLed(statusLed, 5, 50);
 			} else {
-				// the remote XBee did not receive our packet. is it powered on?
-				//flashLed(errorLed, 3, 500);
 			}
 		}
 	} else if (xbee.getResponse().isError()) {
-		//nss.print("Error reading packet.  Error code: ");
-		//nss.println(xbee.getResponse().getErrorCode());
 	} else {
-		// local XBee did not provide a timely TX Status Response -- should not happen
-		//flashLed(errorLed, 2, 50);
 	}
 
 	delay(100);
