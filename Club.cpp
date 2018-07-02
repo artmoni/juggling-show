@@ -8,8 +8,6 @@
 #include "Club.h"
 #include "MPU9250.h"
 
-
-
 Club::Club() {
 	IMU = new MPU9250(Wire, 0x68);
 }
@@ -29,78 +27,36 @@ void Club::init() {
 		while (1) {
 		}
 	}
+	IMU->setGyroBiasX_rads(0);
+	IMU->setGyroBiasY_rads(0);
+	IMU->setGyroBiasZ_rads(0);
+	IMU->calibrateAccel();
+	IMU->calibrateGyro();
+	IMU->calibrateMag();
+
 }
 
-String Club::printGyroSensor() {
-	if (IMU->readSensor() < 0)
-		return "Sensor not ready";
-
-	String sensor = "";
-//	// display the data
-	sensor += "Accel=";
-	sensor += "[";
-	sensor += String(IMU->getAccelX_mss(), 6);
-	sensor += " / ";
-	sensor += String(IMU->getAccelY_mss(), 6);
-	sensor += " / ";
-	sensor += String(IMU->getAccelZ_mss(), 6);
-	sensor += "]";
-	sensor += " Gyro=";
-	sensor += "[";
-
-//	char buf[20];
-//	dtostrf(IMU->getGyroX_rads(), 8, 2, buf);
-	sensor += String();
-//	sensor += String(buf[0]);
-
-//	sensor += "\t";
-//	sensor += String((double)IMU->getGyroY_rads());
-//	sensor += "\t";
-//	sensor += String(IMU->getGyroZ_rads(), 6);
-//	sensor += "]";
-//	sensor += " Mag=";
-//	sensor += "[";
-//	sensor += String(IMU->getMagX_uT());
-//	sensor += "\t";
-//	sensor += String(IMU->getMagY_uT());
-//	sensor += "\t";
-//	sensor += String(IMU->getMagZ_uT());
-//	sensor += "]";
-//	sensor += " TempC=";
-//	sensor += "[";
-//	sensor += String(IMU->getTemperature_C());
-//	sensor += "]";
-
-	return sensor;
-}
-
-int Club::readSensor(){
+int Club::readSensor() {
 
 	return IMU->readSensor();
 }
 
-float Club::getGyroX()
-{
+float Club::getGyroX() {
 	return IMU->getGyroX_rads();
 }
-float Club::getGyroY()
-{
+float Club::getGyroY() {
 	return IMU->getGyroY_rads();
 }
-float Club::getGyroZ()
-{
+float Club::getGyroZ() {
 	return IMU->getGyroZ_rads();
 }
-float Club::getAccelX_mss()
-{
+float Club::getAccelX_mss() {
 	return IMU->getAccelX_mss();
 }
-float Club::getAccelY_mss()
-{
+float Club::getAccelY_mss() {
 	return IMU->getAccelY_mss();
 }
-float Club::getAccelZ_mss()
-{
+float Club::getAccelZ_mss() {
 	return IMU->getAccelZ_mss();
 }
 

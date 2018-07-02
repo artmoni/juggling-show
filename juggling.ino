@@ -23,28 +23,6 @@
 #include "XBee.h"
 XBee xbee = XBee();
 
-uint8_t payload[] = { 0, 0 };
-
-// SH + SL Address of receiving XBee
-XBeeAddress64 addr64 = XBeeAddress64(0x0013a200, 0x40B451CF);
-ZBTxRequest zbTx = ZBTxRequest(addr64, payload, sizeof(payload));
-ZBTxStatusResponse txStatus = ZBTxStatusResponse();
-
-int status;
-
-//declaration of the Threshold
-const int threshold = 2;
-
-// declaration pin of led
-const int ledPinX = 8;
-const int ledPinY = 10;
-const int ledPinZ = 12;
-
-//declaration led state
-int ledStateX = LOW;
-int ledStateY = LOW;
-int ledStateZ = LOW;
-
 Club myClub;
 
 void setup() {
@@ -59,64 +37,37 @@ void setup() {
 //	Serial.println("Club initialized");
 	// start communication with IMU
 
-	//set digital pin output
-	pinMode(ledPinX, OUTPUT);
-	pinMode(ledPinY, OUTPUT);
-	pinMode(ledPinZ, OUTPUT);
 }
 
-// function to check rotation axe X
-//void checkAxeX(){
-//if(abs(IMU.getGyroX_rads()) >= threshold){
-//	ledStateX = HIGH;
-//}else {
-//	ledStateX = LOW;
-//}
-//}
-//
-////function to check rotation axe Y
-//void checkAxeY(){
-//	if(abs(IMU.getGyroY_rads()) >= threshold){
-//		ledStateY = HIGH;
-//	}else {
-//		ledStateY = LOW;
-//	}
-//}
-//
-////function to check rotation axe Z
-//void checkAxeZ(){
-//	if(abs(IMU.getGyroZ_rads() )>= threshold){
-//		ledStateZ = HIGH;
-//	}else{
-//		ledStateZ = LOW;
-//	}
-//}
-
 void loop() {
-//	Serial.println(myClub.printGyroSensor());
+
 	myClub.readSensor();
-////
-//	Serial.print(myClub.getGyroX(), 3);
-//	Serial.print("$");
-//	Serial.print(myClub.getGyroY(), 3);
-//	Serial.print("$");
-//	Serial.print(myClub.getGyroZ(), 3);
-//	Serial.println();
-	uint8_t data[255];
-//	data = ""+String(myClub.getGyroX(), 3) + "$" + String(myClub.getGyroY(), 3)+ "$" + String(myClub.getGyroZ(), 3);
-	String s = String(myClub.getGyroX(), 3);
-	s += "$";
+
+	String s = "";
+	s += String(myClub.getGyroX(), 3);
+	s += '$';
 	s += String(myClub.getGyroY(), 3);
-	s += "$";
+	s += '$';
+	s += String(myClub.getGyroZ(), 3);
+	s += '$';
+//	s += String(myClub.getAccelX_mss(), 3);
+	s += '$';
+//	s += String(myClub.getAccelY_mss(), 3);
+	s += '$';
+//	s += String(myClub.getAccelZ_mss(), 3);
+	s += '$';
 	s += String(myClub.getMPU()->getTemperature_C(), 3);
+
 	byte buf[40];
 	s.getBytes(buf, 39, 0);
+
 	XBeeAddress64 addr64 = XBeeAddress64(0x00000000, 0x00000000);
 	ZBTxRequest zbTx = ZBTxRequest(addr64, buf, sizeof(buf));
 	ZBTxStatusResponse txStatus = ZBTxStatusResponse();
 
 	xbee.send(zbTx);
-	if (xbee.readPacket(500)) {
+
+	if (xbee.readPacket(200)) {
 		// got a response!
 
 		// should be a znet tx status
@@ -140,40 +91,5 @@ void loop() {
 		//flashLed(errorLed, 2, 50);
 	}
 
-//	Serial.print(String(abs(myClub.getGyroX())));
-	// read the sensor
-//	myClub.getMPU()->readSensor();
-	// display the data
-//  Serial.print(myClub.getMPU()->getAccelX_mss(),3);
-//  Serial.print("\t");
-//  Serial.print(myClub.getMPU()->getAccelY_mss(),3);
-//  Serial.print("\t");
-//  char msg[50];
-////  sprintf(msg,"%f",(double) myClub.getMPU()->getAccelZ_mss());
-//  Serial.print((double)myClub.getMPU()->getAccelZ_mss());
-//  Serial.print("\t");
-//  Serial.print(printf("%f",myClub.getMPU()->getGyroX_rads()));
-//  Serial.print("\t");
-//  Serial.print(myClub.getMPU()->getGyroY_rads(),6);
-//  Serial.print("\t");
-//  Serial.print(myClub.getMPU()->getGyroZ_rads(),6);
-//  Serial.print("\t");
-//  Serial.print(IMU.getMagX_uT(),6);
-//  Serial.print("\t");
-//  Serial.print(IMU.getMagY_uT(),6);
-//  Serial.print("\t");
-//  Serial.print(IMU.getMagZ_uT(),6);
-//  Serial.print("\t");
-//	Serial.print(IMU.getTemperature_C(), 6);
-//	Serial.println();
-
-	// call function
-//	checkAxeX();
-//	checkAxeY();
-//	checkAxeZ();
-
-	digitalWrite(ledPinX, ledStateX);
-	digitalWrite(ledPinY, ledStateY);
-	digitalWrite(ledPinZ, ledStateZ);
 	delay(100);
 }
