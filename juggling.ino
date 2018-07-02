@@ -50,16 +50,18 @@ void loop() {
 	s += '$';
 	s += String(myClub.getGyroZ(), 3);
 	s += '$';
-//	s += String(myClub.getAccelX_mss(), 3);
+	s += String(myClub.getAccelX_mss(), 3);
 	s += '$';
-//	s += String(myClub.getAccelY_mss(), 3);
+	s += String(myClub.getAccelY_mss(), 3);
 	s += '$';
-//	s += String(myClub.getAccelZ_mss(), 3);
+	s += String(myClub.getAccelZ_mss(), 3);
 	s += '$';
 	s += String(myClub.getMPU()->getTemperature_C(), 3);
 
-	byte buf[40];
-	s.getBytes(buf, 39, 0);
+	byte buf[50];
+	if (s.length()>50)
+		s="Data too long";
+	s.getBytes(buf, 49, 0);
 
 	XBeeAddress64 addr64 = XBeeAddress64(0x00000000, 0x00000000);
 	ZBTxRequest zbTx = ZBTxRequest(addr64, buf, sizeof(buf));
